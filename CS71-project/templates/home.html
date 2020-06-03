@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title >LifeTrackr </title>
+    <link rel = "stylesheet" type = "text/css" href= "{{ url_for('static',filename='css/profile.css') }}"/>
+    <link rel= "shortcut icon" type= "image/x-icon" href= "static/pictures/favicon.ico"/>
+  </head>
+
+    <header>
+    <div class="container">
+      <img src = "static/pictures/logo.png" class = "myLogo"/>
+      <h1 class="Title"> LifeTrackr </h1>
+      <strong><nav>
+        <ul class="menu">
+          <li><a href="{{ url_for('about') }}">About</a></li>
+          </ul>
+      </nav></strong>
+    </div>
+  </header>
+
+
+  <div id="uname">
+      <div class="container">
+        <h2>Login</h2>
+        <label for="uname"><b>Username </b></label>
+        <input id = "username" type="text" maxlength = 10 placeholder="Enter Username" name="uname" required>
+        <button id = "loginButton" onclick = "submitLogin()" type="submit">Login</button>
+      </div>
+  </div>
+
+
+  <script>
+  function submitLogin(){
+    var username = document.getElementById("username").value; //grabing text from textbox and storing in variable
+    location.href = "http://127.0.0.1:5000/profile?uname="+username;
+  }
+
+  </script>
+
+
+</html>

@@ -1,0 +1,32 @@
+<html>
+  <head>
+
+    <meta charset="utf-8">
+    <title>LifeTrackr</title>
+    <link rel = "stylesheet" type = "text/css" href= "{{ url_for('static',filename='css/profile.css') }}"/>
+    <link rel= "shortcut icon" type= "image/x-icon" href= "static/pictures/favicon.ico"/>
+    <meta name="viewport" content="width=500">
+
+  </head>
+
+    <header>
+      <div class="container">
+        <img src = "static/pictures/logo.png" class = "myLogo"/>
+        <h1 class="Title"> LifeTrackr </h1>
+        <strong><nav>
+          <ul class="menu">
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('about') }}">About</a></li>
+          </ul>
+        </nav></strong>
+      </div>
+    </header>
+
+  <body>
+    <h1 id="text1">You have been logged out.</h1>
+    <br><br>
+    <p id="db_response"></p>
+
+  </body>
+
+</html>

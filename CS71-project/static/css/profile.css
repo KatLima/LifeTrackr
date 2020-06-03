@@ -1,0 +1,77 @@
+
+body{
+  background-color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+}
+
+
+#uname{
+  text-align: center;
+}
+
+.myLogo{
+  float: left;
+  height: 30px;
+  width: 50px;
+}
+.Title{
+  float:center;
+}
+
+.menu{
+  list-style-type: none;
+  margin: 0px;
+  padding: 0px;
+  text-align: right;
+}
+
+header {
+   background-color: #FFFACD;
+   padding: 5px;
+}
+
+div.colorcube{
+    height: 100px;
+    width: 100px;
+    border: 10px solid gray;
+    color: white;
+    background-color: lightgray;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;  /* why isn this working */
+    margin:10px;
+    border-radius: 20px;
+}
+
+div.colorcube:hover{
+  box-shadow: 10px 10px 5px grey;
+}
+
+div.selection{
+    border:10px solid ivory;
+}
+
+html, body {
+  height: 100%
+}
+.content {
+  flex: 1 0 auto;
+  text-align: center;
+  background-color: #FFFACD;
+  padding: 20px;
+}
+.footer {
+  flex-shrink: 0px;
+}
+
+
+
+#moodButton {
+  font-size: 25px;
+  width: 100px;
+  height: 50px;
+  margin: auto;
+  background-color: Green;
+  color: white;
+}

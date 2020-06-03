@@ -1,0 +1,33 @@
+<html>
+
+  <head>
+    <title>LifeTrackr</title>
+    <link rel = "stylesheet" type = "text/css" href= "{{ url_for('static',filename='css/profile.css') }}"/>
+    <link rel= "shortcut icon" type= "image/x-icon" href= "static/pictures/favicon.ico"/>
+  </head>
+
+  <header>
+    <div class="container">
+      <img src = "static/pictures/logo.png" class = "myLogo"/>
+      <h1 class="Title"> LifeTrackr </h1>
+      <strong><nav>
+        <ul class="menu">
+          <li ><a href="{{ url_for('home') }}">Home</a></li>
+        </ul>
+      </nav></strong>
+    </div>
+  </header>
+
+  <body>
+    <p>Developers:</p>
+    <li> Katherine Lima </li>
+    <li> Mirabai Smoot </li>
+    <li> Jill </li>
+    <li> Ray </li>
+    <div class="container">
+      {% block content %}
+      {% endblock %}
+    </div>
+  </body>
+
+</html>

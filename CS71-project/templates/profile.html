@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>LifeTrackr</title>
+    <link rel = "stylesheet" type = "text/css" href= "{{ url_for('static',filename='css/profile.css') }}"/>
+    <link rel= "shortcut icon" type= "image/x-icon" href= "static/pictures/favicon.ico"/>
+
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <img src = "static/pictures/logo.png" class = "myLogo"/>
+        <h1 class="Title"> LifeTrackr </h1>
+        <strong><nav>
+          <ul class="menu">
+            <li ><a href="{{ url_for('logout') }}">Logout</a></li>
+          </ul>
+        </nav></strong>
+      </div>
+
+    </header>
+
+    <h1 id="text1">Welcome to your LifeTrackr Profile</h1>
+    <p> Hello, {{ uname }}. </p>
+    <!-- <script src="static/js/profile.js"></script> -->
+
+
+    <p style="font-size:20px">On a scale of 1 to 5, how are you feeling today?</p>
+
+    <p id="err_messg"></p>
+    <div class="container">
+      <!-- still have to set max equal to current date,RSHERE YYYY-MM-DD -->
+      <label for="enter_mood" style="font-size:20px">Please select a date: </label>
+      <input type="date" id="datechoice" name="datechoice"
+            min="2016-01-01" >
+      <br>
+
+
+    </div>
+
+    <div style="text-align: center;">
+      <div class="colorcube" id="block1" onclick='changeSelection("block1")' >idk yet</div>
+    </div>
+
+    <br>
+
+    <div style="text-align: center; border: 5px solid black; margin:auto;">
+      <div class="colorcube" style="background-color: rebeccapurple; border-color: navy;" onclick='changeCubeColor("block1","rebeccapurple","navy", "1")'>1: total misery.</div>
+      <div class="colorcube" style="background-color: hotpink; border-color: palevioletred;" onclick='changeCubeColor("block1","hotpink","palevioletred", "2")'>2: not so hot.</div>
+      <div class="colorcube" style="background-color: tomato; border-color: crimson;" onclick='changeCubeColor("block1","tomato","crimson", "3")'>3: could be worse.</div>
+      <div class="colorcube" style="background-color: coral; border-color: indianred;" onclick='changeCubeColor("block1","coral","indianred", "4")'>4: happy and content.</div>
+      <div class="colorcube" style="background-color: gold; border-color: goldenrod;" onclick='changeCubeColor("block1","gold","goldenrod", "5")'>5: bursting with joy!</div>
+    </div>
+      <button id="moodButton" onclick="submitMood()" type="submit">Enter</button>
+
+    <br>
+
+    <div id="enter_mood">
+    	<p id="avg_mood"></p>
+      <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+      <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+      <br>
+    </div>
+
+
+    <script>
+
+    var currentSelection = "block1";
+
+    function changeCubeColor(newselection, cubecolor, bordercolor, innertext) {
+      if(currentSelection != "") {
+        if(cubecolor != "") {
+          document.getElementById(currentSelection).style.backgroundColor = cubecolor;
+          document.getElementById(currentSelection).innerHTML = innertext;
+        }
+        document.getElementById(currentSelection).style.borderColor = bordercolor;
+      }
+        //TODO: write a script that can pass the number to the database
+    }//end of function
+
+
+      function getAvgMood() {
+        var xhttp = new XMLHttpRequest();
+
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            if(this.responseText=="-1") {
+              document.getElementById("avg_mood").innerHTML = "You have no mood data.";
+            }
+            else {
+              document.getElementById("avg_mood").innerHTML = "Overall average mood: " + this.responseText;
+            }
+          }
+        };
+
+        xhttp.open("GET", "/getAvgMood?uname={{uname}}", true);
+        xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        xhttp.send();
+      }
+
+    	function getAvgMonthlyMood(monthsbefore) {
+        var xhttp = new XMLHttpRequest();
+
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            makeGraph(JSON.parse(this.responseText)); //updates graph
+          }
+        };
+        xhttp.open("GET", "/getAvgMonthlyMood?uname={{uname}}&monthsbefore="+monthsbefore, true);
+        xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        xhttp.send();
+    	}
+
+      function makeGraph(datastring) {
+        data = [];
+        var theMonths = ["January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"];
+        var today = new Date();
+        var month = today.getMonth();
+
+        for(var i in datastring) {
+
+          if (month < 0){
+            month = 11;
+            data.unshift( { y: datastring[i], label: theMonths[month] } );
+            month--;
+          }
+          else{
+            data.unshift( { y: datastring[i], label: theMonths[month] } );
+            month--;
+          }
+
+        }
+
+        var chart = new CanvasJS.Chart("chartContainer", {
+        	animationEnabled: true,
+        	theme: "light2",
+        	title:{
+        		text: "Average Monthly Moods"
+        	},
+        	axisY: {
+        		title: "Average Mood",
+            maximum: 5,
+        	},
+        	data: [{
+        		type: "column",
+        		dataPoints: data
+        	}]
+        });
+        chart.render();
+      }
+
+      function submitMood() {
+  	    var mood = document.getElementById("block1").innerHTML;
+  	    var datechoice = document.getElementById("datechoice").value;
+        var err;
+
+        if(mood != "idk yet"){ //and if date is valid. TODO: add that.
+    	    var xhttp = new XMLHttpRequest();
+
+          xhttp.onreadystatechange = function() {
+              err = this.responseText;
+              console.log(err);
+              document.getElementById("err_messg").innerHTML = err;// empty string if no error, error message if error
+              getAvgMood();
+              getAvgMonthlyMood(5);
+          };
+
+    	    xhttp.open("POST", "/insertMood", true);
+    	    xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+    	    xhttp.send("username={{uname}}&mood=" + mood + "&day=" + datechoice);
+        }
+        else {
+          document.getElementById("err_messg").innerHTML = "Uh oh! Make sure you select a mood and a valid date before submitting";
+        }
+      }
+
+      function getTodaysDate(){
+        var today = new Date();
+        var year= today.getFullYear();
+        var mo = today.getMonth()+1;
+        if (mo<10){
+          mo= "0"+mo;
+        }
+
+        var day = today.getDate();
+        if (day<10){
+          day= "0"+day;
+        }
+
+        return year + "-" + mo + "-" + day;
+      }
+
+      document.getElementById("datechoice").setAttribute("max", getTodaysDate());
+      document.getElementById("datechoice").setAttribute("value", getTodaysDate());
+
+      // Excute at startup
+
+      getAvgMood();
+      getAvgMonthlyMood(5); //also updates the graph
+
+    </script>
+
+
+<!-- TODO: make sure date selector defaults to current date; making sure you can only select one mood per day -->
+    <br><br>
+    <p id="db_response"></p>
+
+  <div class="content">
+    LifeTrackr
+  </div>
+  <footer class="footer"></footer>
+
+</body>
+
+</html>
